@@ -101,7 +101,10 @@ def webhook():
         print("Fila enviada a Google Sheets")
 
     except Exception as e:
-        print("Error procesando mensaje:", e)
+       except Exception as e:
+    import traceback
+    print("Error procesando mensaje:", repr(e))
+    traceback.print_exc()
 
     return jsonify({"status": "ok"}), 200
 
