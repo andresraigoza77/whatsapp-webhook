@@ -1,8 +1,9 @@
 import os
 import csv
-import gspread
 from datetime import datetime
+
 from flask import Flask, request, jsonify
+import gspread
 from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ def get_sheet():
     )
     client = gspread.authorize(creds)
     spreadsheet = client.open_by_key(SPREADSHEET_ID)
+    # pestaña exacta en tu hoja
     return spreadsheet.worksheet("Registro de Mensajes")
 
 
@@ -84,7 +86,7 @@ def webhook():
         print("Payload botón:", btn_payload)
 
         row = [
-            datetime.utcnow().isoformat(),
+            datetime.utcnow().isoformat(),  # fecha/hora UTC
             contact_name,
             contact_wa_id,
             msg_type,
@@ -92,19 +94,20 @@ def webhook():
             btn_payload,
         ]
 
+        # también guardar en CSV (opcional)
         with open("whatsapp_events.csv", mode="a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(row)
 
+        # enviar a Google Sheets
         sheet = get_sheet()
         sheet.append_row(row, value_input_option="USER_ENTERED")
         print("Fila enviada a Google Sheets")
 
     except Exception as e:
-       except Exception as e:
-    import traceback
-    print("Error procesando mensaje:", repr(e))
-    traceback.print_exc()
+        import traceback
+        print("Error procesando mensaje:", repr(e))
+        traceback.print_exc()
 
     return jsonify({"status": "ok"}), 200
 
