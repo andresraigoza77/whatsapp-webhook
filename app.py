@@ -25,7 +25,7 @@ def get_sheet():
     )
     client = gspread.authorize(creds)
     spreadsheet = client.open_by_key(SPREADSHEET_ID)
-    return spreadsheet.sheet1
+    return spreadsheet.worksheet("Registro de Mensajes")
 
 
 @app.route("/webhook", methods=["GET"])
