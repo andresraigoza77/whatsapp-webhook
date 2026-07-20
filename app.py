@@ -45,9 +45,22 @@ def webhook():
         print("Tipo de mensaje:", msg_type)
         print("Texto:", msg_body)
         print("Payload botón:", btn_payload)
+        # Guardar en CSV básico
+        import csv
+        from datetime import datetime
 
-        # Aquí luego conectaremos la escritura a CSV / Google Sheets
-        # por ahora solo lo dejamos estructurado
+        row = [
+            datetime.utcnow().isoformat(),  # fecha y hora en UTC
+            contact_name,
+            contact_wa_id,
+            msg_type,
+            msg_body,
+            btn_payload,
+        ]
+
+        with open("whatsapp_events.csv", mode="a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(row)
 
     except Exception as e:
         print("Error procesando mensaje:", e)
